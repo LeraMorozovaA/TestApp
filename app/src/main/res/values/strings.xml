@@ -1,0 +1,42 @@
+<resources>
+    <string name="app_name">MyTestApp</string>
+    <string name="title_home">Головна</string>
+    <string name="title_order">Замовлення</string>
+    <string name="title_notifications">Повідомлення</string>
+    <string name="title_profile">Профіль</string>
+    <string name="title_cart">Моє замовлення</string>
+    <string name="max_score">/10</string>
+    <string name="string_delivery">Доставка</string>
+    <string name="text_filter">Усі способи отримання</string>
+    <string name="text_not_enough_rating">недостатньо оцінок</string>
+    <string name="pre_order">передзамовлення</string>
+    <string name="output">вихідний</string>
+    <string name="string_open">відкрито</string>
+    <string name="pause">тимчасово не працює</string>
+    <string name="check_internet">Перевірте інтернет підключеня</string>
+    <string name="fragment_order">Наразі активних замовлень немає</string>
+    <string name="notifications_fragment">Повідомлень поки немає</string>
+    <string name="fragment_profile">Мій профіль</string>
+    <string name="txt_companies">Заклади</string>
+    <string name="txt_categories">Категорії</string>
+    <string name="title_delivery">Спосіб отримання</string>
+    <string name="title_filters">Фільтри</string>
+    <string name="text_toolbar_filters">Доставка та категорії</string>
+    <string name="txt_selected">Обрано</string>
+    <string name="confirm_button_txt">Підтвердити</string>
+    <string name="action_text">Без націнок</string>
+    <string name="text_header">Усі способи отримання</string>
+    <string name="text_type_2">Самовивіз</string>
+    <string name="text_filters_header">Усі категорії</string>
+    <string name="text_filters_header2">Акційні</string>
+
+    <plurals name="plurals_1">
+        <item quantity="zero">0</item>
+        <item quantity="one">%1$d акція</item>
+        <item quantity="two">%1$d акції</item>
+        <item quantity="few">%1$d акції</item>
+        <item quantity="many">%1$d акцій</item>
+        <item quantity="other">%1$d акцій</item>
+    </plurals>
+
+</resources>
