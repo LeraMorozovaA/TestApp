@@ -24,7 +24,7 @@ class FiltersCompanyAdapter: RecyclerView.Adapter<FiltersCompanyAdapter.FilterCo
     override fun onBindViewHolder(holder: FilterCompanyViewHolder, position: Int) {
         holder.bind(mDataList[position])
         holder. mCheckBox.setOnClickListener {
-            selectedClickListener.selectPosition(mDataList[position])
+            selectedClickListener.selectPosition(mDataList[position], 1)
         }
     }
 
@@ -45,10 +45,6 @@ class FiltersCompanyAdapter: RecyclerView.Adapter<FiltersCompanyAdapter.FilterCo
 
         private val mText = itemView.text_filters_checkbox
         val mCheckBox = itemView.checkbox_filters
-
-        init {
-
-        }
 
         fun bind(model: AvailableCompaniesModel){
             mText.text = model.name

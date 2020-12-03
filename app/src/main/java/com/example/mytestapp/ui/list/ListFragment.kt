@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.observe
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.mytestapp.R
@@ -39,28 +40,31 @@ class ListFragment : Fragment() {
 
         viewModel.getCompaniesList()
 
-        viewModel.companiesList.observe(viewLifecycleOwner, { list ->
+        viewModel.companiesList.observe(viewLifecycleOwner) { list ->
             mAdapter.setData(list)
-        })
+        }
 
-        viewModel.state.observe(viewLifecycleOwner, { state ->
+        viewModel.state.observe(viewLifecycleOwner) { state ->
             when (state) {
                 is State.LoggingState -> {
                     recyclerView.visibility = View.GONE
                     progress_bar.visibility = View.VISIBLE
+                    filter_layout.isClickable = false
                 }
 
                 is State.SucceededState -> {
                     recyclerView.visibility = View.VISIBLE
                     progress_bar.visibility = View.GONE
+                    filter_layout.isClickable = true
                 }
 
                 is State.ErrorState -> {
                     progress_bar.visibility = View.GONE
                     text_error.visibility = View.VISIBLE
+                    filter_layout.isClickable = false
                 }
             }
-        })
+        }
 
         filter_layout.setOnClickListener {
             val intent = Intent(context, FiltersActivity::class.java)

@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.observe
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.mytestapp.R
@@ -48,16 +48,16 @@ class DeliveryListFragment: Fragment(), OnSelectedClickListener {
 
         viewModel.getAvailableDeliveryList()
 
-        viewModel.deliveryList.observe(viewLifecycleOwner, { list ->
+        viewModel.deliveryList.observe(viewLifecycleOwner) { list ->
             mAdapter.setData(list)
-        })
+        }
 
         requireActivity().confirm_button.setOnClickListener {
             Toast.makeText(context, "!!!", Toast.LENGTH_SHORT).show()
         }
     }
 
-    override fun selectPosition(selectedItem: ISelected) {
+    override fun selectPosition(selectedItem: ISelected, type: Int) {
         Toast.makeText(context, selectedItem.toString() , Toast.LENGTH_SHORT).show()
 
     }

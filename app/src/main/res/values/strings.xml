@@ -39,4 +39,13 @@
         <item quantity="other">%1$d акцій</item>
     </plurals>
 
+    <plurals name="plurals_2">
+        <item quantity="zero">0</item>
+        <item quantity="one">%1$d компанія</item>
+        <item quantity="two">%1$d компанії</item>
+        <item quantity="few">%1$d компанії</item>
+        <item quantity="many">%1$d компаній</item>
+        <item quantity="other">%1$d компаній</item>
+    </plurals>
+
 </resources>

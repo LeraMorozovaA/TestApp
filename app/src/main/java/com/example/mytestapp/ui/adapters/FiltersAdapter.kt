@@ -1,6 +1,5 @@
 package com.example.mytestapp.ui.adapters
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -50,7 +49,7 @@ class FiltersAdapter : RecyclerView.Adapter<FiltersAdapter.FiltersListViewHolder
             mRadioButton.setOnClickListener {
                 mSelected = adapterPosition
                 notifyDataSetChanged()
-                selectedClickListener.selectPosition(mDataList[mSelected])
+                selectedClickListener.selectPosition(mDataList[mSelected], 2)
             }
         }
 

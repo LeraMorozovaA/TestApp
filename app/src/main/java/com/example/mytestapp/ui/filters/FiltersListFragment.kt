@@ -7,9 +7,11 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.observe
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.mytestapp.R
+import com.example.mytestapp.data.model.FilterModel
 import com.example.mytestapp.ui.adapters.FiltersAdapter
 import com.example.mytestapp.ui.adapters.FiltersCompanyAdapter
 import com.example.mytestapp.ui.interfaces.ISelected
@@ -59,15 +61,16 @@ class FiltersListFragment: Fragment(), OnSelectedClickListener {
         viewModel.getFiltersCompaniesList()
         viewModel.getFiltersList()
 
-        viewModel.filtersCompaniesList.observe(viewLifecycleOwner, { list ->
+        viewModel.filtersCompaniesList.observe(viewLifecycleOwner) { list ->
             mAdapter.setData(list)
-        })
+        }
 
-        viewModel.filtersList.observe(viewLifecycleOwner, { list ->
+        viewModel.filtersList.observe(viewLifecycleOwner) { list ->
             mFiltersAdapter.setData(list)
-        })
+        }
     }
 
-    override fun selectPosition(selectedItem: ISelected) {
-        Toast.makeText(context, selectedItem.toString() , Toast.LENGTH_SHORT).show()    }
+    override fun selectPosition(selectedItem: ISelected, type: Int) {
+        viewModel.getData(selectedItem, type)
+    }
 }
