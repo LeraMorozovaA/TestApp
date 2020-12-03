@@ -57,7 +57,7 @@ class DeliveryListFragment: Fragment(), OnSelectedClickListener {
         }
     }
 
-    override fun selectPosition(selectedItem: ISelected, type: Int) {
+    override fun selectPosition(selectedItem: ISelected) {
         Toast.makeText(context, selectedItem.toString() , Toast.LENGTH_SHORT).show()
 
     }

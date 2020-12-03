@@ -1,11 +1,16 @@
 package com.example.mytestapp.ui.list
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.example.mytestapp.data.State
 import com.example.mytestapp.data.model.CompanyModel
 import com.example.mytestapp.data.repository.DataRepository
 import io.reactivex.disposables.CompositeDisposable
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 
 class ListViewModel : ViewModel() {
 
@@ -22,8 +27,9 @@ class ListViewModel : ViewModel() {
         companiesList = dataRepository.companiesList
     }
 
-    fun onFiltersLayoutClicked() {
-
+    fun getFiltersModels() {
+        dataRepository.getAvailableDeliveryData()
+        dataRepository.getFiltersList()
     }
 
     override fun onCleared() {

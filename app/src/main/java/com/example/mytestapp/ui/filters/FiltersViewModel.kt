@@ -1,10 +1,9 @@
 package com.example.mytestapp.ui.filters
 
-import android.content.Context
-import android.widget.Toast
+import androidx.databinding.ObservableInt
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.mytestapp.data.State
 import com.example.mytestapp.data.model.AvailableCompaniesModel
 import com.example.mytestapp.data.model.AvailableDeliveryModel
 import com.example.mytestapp.data.model.DeliveryModel
@@ -12,21 +11,23 @@ import com.example.mytestapp.data.model.FilterModel
 import com.example.mytestapp.data.repository.DataRepository
 import com.example.mytestapp.ui.interfaces.ISelected
 import io.reactivex.disposables.CompositeDisposable
+import java.util.*
 
 class FiltersViewModel : ViewModel() {
 
     private val compositeDisposable = CompositeDisposable()
     private val dataRepository = DataRepository(compositeDisposable)
-    private val listOfFilters = ArrayList<Pair<Int, ISelected>>()
+    private val ty = 4
 
     lateinit var deliveryList: LiveData<List<AvailableDeliveryModel>>
     lateinit var filtersCompaniesList: LiveData<List<AvailableCompaniesModel>>
     lateinit var filtersList: LiveData<List<FilterModel>>
-    lateinit var  countOfCompanies: LiveData<Int>
+    var deliveryClick = MutableLiveData(4)
+    //var  countOfCompanies: LiveData<Int>
 
 
     fun getAvailableDeliveryList() {
-        dataRepository.getAvailableDeliveryData()
+        dataRepository.getAvailableListFromDB()
         deliveryList = dataRepository.deliveryDataList
     }
 
@@ -36,20 +37,26 @@ class FiltersViewModel : ViewModel() {
     }
 
     fun getFiltersList(){
-        dataRepository.getFiltersList()
+        dataRepository.getFiltersListFromDB()
         filtersList = dataRepository.filtersList
     }
 
-    fun getData(selectedItem: ISelected, type: Int){
-        val pair: Pair<Int, ISelected> = type to selectedItem
-        listOfFilters.add(pair)
-        get()
+    fun getDeliveryClick(selectedItem: Int){
+        deliveryClick.value = selectedItem
     }
 
-    fun get(){
-        dataRepository.getResults()
-        countOfCompanies = dataRepository.countOfCompanies
+    fun getFiltersClick(selectedItem: Int){
+       // deliveryClick.set(selectedItem)
     }
+
+    fun getCompanyClick(selectedItem: Int){
+       // deliveryClick.set(selectedItem)
+    }
+
+//    fun get(){
+//        dataRepository.getResults()
+//        countOfCompanies = dataRepository.countOfCompanies
+//    }
 
     override fun onCleared() {
         super.onCleared()

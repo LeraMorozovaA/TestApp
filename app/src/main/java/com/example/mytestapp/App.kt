@@ -1,21 +1,25 @@
 package com.example.mytestapp
 
 import android.app.Application
+import androidx.room.Room
 import com.example.mytestapp.api.CompaniesApi
+import com.example.mytestapp.data.AppDatabase
 
 class App: Application() {
 
     companion object {
         lateinit var instance: App
         lateinit var apiService: CompaniesApi.ApiInterface
-//      lateinit var db: AppDatabase
+        lateinit var database: AppDatabase
     }
 
     override fun onCreate() {
         super.onCreate()
         instance = this
-//        db = Room.databaseBuilder(this, AppDatabase::class.java , "database")
-//            .build()
+        database = Room.databaseBuilder(
+            this, AppDatabase::class.java, "database")
+            .build()
+
         apiService = CompaniesApi.getClient().create(
             CompaniesApi.ApiInterface::class.java)
     }

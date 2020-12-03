@@ -1,10 +1,15 @@
 package com.example.mytestapp.data.model
 
 import androidx.annotation.NonNull
+import androidx.room.Entity
 import androidx.room.PrimaryKey
+import androidx.room.TypeConverters
+import com.example.mytestapp.data.Converter
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
+@TypeConverters(Converter::class)
+@Entity(tableName = "company_model")
 data class CompanyModel (
 
         @PrimaryKey
@@ -43,15 +48,15 @@ data class CompanyModel (
 
         @SerializedName("specializedCategoriesIds")
         @Expose
-        var specializedCategoriesIds: List<Int>? = null,
+        var specializedCategoriesIds: List<Int>,
 
-        @SerializedName("recommendedCategoriesIds")
-        @Expose
-        var recommendedCategoriesIds: List<Any>? = null,
+//        @SerializedName("recommendedCategoriesIds")
+//        @Expose
+//        var recommendedCategoriesIds: List<Int>,
 
         @SerializedName("availableDeliveryTypes")
         @Expose
-        var availableDeliveryTypes: List<Int>? = null, //какие способы доставки
+        var availableDeliveryTypes: List<Int>, //какие способы доставки
 
         @SerializedName("terminalPayment")
         @Expose

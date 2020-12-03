@@ -3,21 +3,21 @@ package com.example.mytestapp.data.repository
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.example.mytestapp.App
 import com.example.mytestapp.App.Companion.apiService
-import com.example.mytestapp.R
 import com.example.mytestapp.api.CompaniesApi
 import com.example.mytestapp.data.State
 import com.example.mytestapp.data.model.*
-import com.example.mytestapp.ui.interfaces.ISelected
-import io.reactivex.Observable
+import com.example.mytestapp.util.getResults
+import com.example.mytestapp.util.saveToSharedPref
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
-import org.reactivestreams.Subscription
 import java.util.*
-import java.util.function.Predicate
 
 class DataRepository(private val compositeDisposable: CompositeDisposable) {
+
+    private val database = App.database.companiesModelDAO()
 
     private val _state = MutableLiveData<State>()
     val state: LiveData<State> get() = _state
@@ -43,13 +43,13 @@ class DataRepository(private val compositeDisposable: CompositeDisposable) {
     val filtersCompaniesList: LiveData<List<AvailableCompaniesModel>>
         get() = _filtersCompaniesList
 
-    private val _countOfCompanies = MutableLiveData<Int>()
+    private val _list = MutableLiveData<List<CompanyModel>>()
 
-    val countOfCompanies: LiveData<Int>
-        get() = _countOfCompanies
+//    private val _countOfCompanies = MutableLiveData<Int>()
+//
+//    val countOfCompanies: LiveData<Int>
+//        get() = _countOfCompanies
 
-    private val arrayList = ArrayList<AvailableDeliveryModel>()
-    private val filtersArrayList = ArrayList<FilterModel>()
 
     fun getCompaniesList() {
         _state.value = State.LoggingState
@@ -57,12 +57,12 @@ class DataRepository(private val compositeDisposable: CompositeDisposable) {
             apiService.getCompaniesList(CompaniesApi.CITY_ID)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-
                 .subscribe(
                     { list ->
                         _state.value = State.SucceededState
-                        _companiesList.postValue(list.toList())
-                        _countOfCompanies.value = list.size
+                        _companiesList.value = list
+                        insertCompaniesIntoDB(list)
+                        getCompaniesListFromDB()
                     },
                     { error ->
                         _state.value = State.ErrorState
@@ -81,9 +81,8 @@ class DataRepository(private val compositeDisposable: CompositeDisposable) {
                 .subscribe(
                     { data ->
                         _state.value = State.SucceededState
-                        addFirstElement()
-                        arrayList.addAll(data.list)
-                        _deliveryDataList.postValue(arrayList)
+                        insertIntoDB(addFirstElement(data.list))
+
                     },
                     { error ->
                         _state.value = State.ErrorState
@@ -102,10 +101,7 @@ class DataRepository(private val compositeDisposable: CompositeDisposable) {
                 .subscribe(
                     { data ->
                         _state.value = State.SucceededState
-                        //добавить в бд
-                        addElement()
-                        filtersArrayList.addAll(data)
-                        _filtersList.postValue(filtersArrayList)
+                        insertElementsIntoDB(data)
                     },
                     { error ->
                         _state.value = State.ErrorState
@@ -115,23 +111,48 @@ class DataRepository(private val compositeDisposable: CompositeDisposable) {
         )
     }
 
-    fun getResults() {
-        getCompaniesList()
-        val element = 3
-        val oldList: List<CompanyModel> = _companiesList.value!!
-        val observableList: Observable<CompanyModel> = Observable.fromIterable(oldList)
-        val subscribe = observableList.filter { it.availableDeliveryTypes!!.contains(element) }
-            .toList()
-            .observeOn(Schedulers.computation())
-            .subscribeOn(AndroidSchedulers.mainThread())
-            .subscribe( {
-                _companiesList.value = it
-                _countOfCompanies.value = it.size
-            }, {
-                Log.e("DataSource", it.message.toString())
-        })
-        compositeDisposable.add(subscribe)
+    fun getFiltersListFromDB(){
+        compositeDisposable.add(database.getFilterModel()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { list ->
+                _filtersList.value = list
+            })
     }
+
+    fun getAvailableListFromDB(){
+        compositeDisposable.add(database.getDeliveryModel()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { model ->
+                _deliveryDataList.value = model.list
+            }
+        )
+    }
+
+    fun getCompaniesListFromDB() {
+        compositeDisposable.add(database.getCompaniesList()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { data ->
+                data.getResults(4, 0)
+            }
+        )
+    }
+
+//        val observableList: Observable<CompanyModel> = Observable.fromIterable(oldList)
+//        val subscribe = observableList.filter { it.availableDeliveryTypes!!.contains(element) }
+//            .toList()
+//            .observeOn(Schedulers.computation())
+//            .subscribeOn(AndroidSchedulers.mainThread())
+//            .subscribe( {
+//                _companiesList.value = it
+//                _countOfCompanies.value = it.size
+//            }, {
+//                Log.e("DataSource", it.message.toString())
+//        })
+//        compositeDisposable.add(subscribe)
+
 
     fun getFiltersCompaniesList() {
         val list = ArrayList<AvailableCompaniesModel>()
@@ -142,13 +163,42 @@ class DataRepository(private val compositeDisposable: CompositeDisposable) {
         _filtersCompaniesList.value = list
     }
 
-    private fun addFirstElement() {
-        val element = AvailableDeliveryModel(4, "Усі способи отримання")
-        arrayList.add(0, element)
+    private fun insertIntoDB(model: DeliveryModel){
+        compositeDisposable.add(
+            database.insertDeliveryModel(model)
+                .subscribeOn(Schedulers.computation())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe ()
+        )
     }
 
-    private fun addElement() {
-        val element = FilterModel(15, "Усі категорії")
+    private fun addFirstElement(list: List<AvailableDeliveryModel>): DeliveryModel{
+        val arrayList = ArrayList<AvailableDeliveryModel>()
+        val element = AvailableDeliveryModel(4, "Усі способи отримання")
+        arrayList.add(0, element)
+        arrayList.addAll(list)
+        return DeliveryModel((arrayList))
+    }
+
+    private fun insertElementsIntoDB(list: List<FilterModel>) {
+        val filtersArrayList = ArrayList<FilterModel>()
+        val element = FilterModel(0, "Усі категорії")
         filtersArrayList.add(0, element)
+        filtersArrayList.addAll(list)
+        for (i in filtersArrayList){
+            database.insertFilterModel(i)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe()
+        }
+    }
+
+    private fun insertCompaniesIntoDB(list: List<CompanyModel>) {
+        for (i in list){
+            database.insertCompaniesModel(i)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe()
+        }
     }
 }

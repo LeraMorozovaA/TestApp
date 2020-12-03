@@ -70,7 +70,9 @@ class FiltersListFragment: Fragment(), OnSelectedClickListener {
         }
     }
 
-    override fun selectPosition(selectedItem: ISelected, type: Int) {
-        viewModel.getData(selectedItem, type)
+    override fun selectPosition(selectedItem: ISelected) {
+        viewModel.deliveryClick.observe(viewLifecycleOwner){
+
+        }
     }
 }

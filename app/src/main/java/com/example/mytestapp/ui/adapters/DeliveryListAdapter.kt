@@ -50,7 +50,7 @@ class DeliveryListAdapter: RecyclerView.Adapter<DeliveryListAdapter.DeliveryList
             mRadioButton.setOnClickListener {
                 mSelected = adapterPosition
                 notifyDataSetChanged()
-                selectedClickListener.selectPosition(mDataList[mSelected], 0)
+                selectedClickListener.selectPosition(mDataList[mSelected])
             }
         }
 

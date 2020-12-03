@@ -39,6 +39,7 @@ class ListFragment : Fragment() {
         recyclerView.adapter = mAdapter
 
         viewModel.getCompaniesList()
+        viewModel.getFiltersModels()
 
         viewModel.companiesList.observe(viewLifecycleOwner) { list ->
             mAdapter.setData(list)
