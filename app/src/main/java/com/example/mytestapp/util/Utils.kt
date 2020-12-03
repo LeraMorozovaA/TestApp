@@ -9,6 +9,7 @@ import com.example.mytestapp.App
 import com.example.mytestapp.R
 import com.example.mytestapp.data.model.AvailableDeliveryModel
 import com.example.mytestapp.data.model.CompanyModel
+import java.math.BigInteger
 import java.util.ArrayList
 
 
@@ -32,68 +33,66 @@ fun ImageView.setIcon(type: Int) {
 private val myPrefs: SharedPreferences =
     App.instance.applicationContext.getSharedPreferences("YOUR_PREFS_NAME", Context.MODE_PRIVATE)
 
-fun Int.saveToSharedPref(key: String) {
-    val prefsEditor: SharedPreferences.Editor = myPrefs.edit()
-    prefsEditor.putInt(key, this)
-    prefsEditor.apply()
-}
+fun List<CompanyModel>.getResults(delivery: Int, filters: Int, company: String, unChecked: Boolean): List<CompanyModel> {
+    val list = ArrayList<CompanyModel>()
+    list.addAll(elements = this)
 
-fun getListFromSharedPref(key: String): Int {
-    return myPrefs.getInt(key, -1)
-}
+    if (delivery != 4)
+      list.retainAll(filterByDelivery(delivery, this))
 
-private val ALL_DELIVERY = listOf(0, 1, 2, 3)
-private val ALL_FILTERS = listOf(9, 8, 12, 5, 4, 7, 2)
-private val newList = ArrayList<CompanyModel>()
-private var count = 0
+    if (filters != 0)
+        list.retainAll(filterByFilters(filters, this))
 
-fun List<CompanyModel>.getResults(delivery: Int = 4, filters: Int = 0) { //1
-    if (delivery == 4 && filters == 0) {
-        newList.addAll(this)
-        count = newList.size
-        Log.i("UUUU", count.toString())
-
-    } else if (delivery == 4 && filters != 0) {
-        filterByFilters(filters, this)
-    } else if (delivery != 4 && filters == 0) {
-        filterByDelivery(delivery, this)
-    } else {
-        filterByDeliveryAndFilters(delivery, filters, this)
+    if (!unChecked) {
+        if (company.isNotEmpty())
+            list.retainAll(filterByCompany(company, this))
     }
+
+    return list
 }
 
-fun filterByDelivery(delivery: Int, list: List<CompanyModel>) { // all filters one delivery
-    for (i in list) {
+
+fun filterByDelivery(delivery: Int, list: List<CompanyModel>): ArrayList<CompanyModel> {
+    val newList = ArrayList<CompanyModel>()
+    for (i: CompanyModel in list) {
         if (i.availableDeliveryTypes.contains(delivery)) {
             newList.add(i)
         } else
             continue
     }
-    count = newList.size
-    Log.i("UUUU", count.toString())
+
+    return newList
 }
 
-fun filterByFilters(filters: Int, list: List<CompanyModel>) { // all delivery one filters
-    for (i in list) {
+fun filterByFilters(filters: Int, list: List<CompanyModel>): ArrayList<CompanyModel> {
+    val newList = ArrayList<CompanyModel>()
+    for (i: CompanyModel in list) {
         if (i.specializedCategoriesIds.contains(filters)) {
             newList.add(i)
         } else
             continue
     }
-    count = newList.size
-    Log.i("UUUU", count.toString())
+
+    return newList
 }
 
-fun filterByDeliveryAndFilters(delivery: Int, filters: Int, list: List<CompanyModel>) { // one delivery and filters
-    for (i in list) {
-        if (i.specializedCategoriesIds.contains(filters)) {
-            if (i.availableDeliveryTypes.contains(delivery))
+fun filterByCompany(company: String, list: List<CompanyModel>): ArrayList<CompanyModel> {
+    val newList = ArrayList<CompanyModel>()
+    if (company == "status"){
+        for (i: CompanyModel in list) {
+            if (i.status == 1 && i.isWorkingNow == 1) {
                 newList.add(i)
-            else
+            } else
                 continue
-        } else
-            continue
+        }
+    } else if (company == "onlinePayment"){
+        for (i: CompanyModel in list) {
+            if (i.onlinePayment == 1) {
+                newList.add(i)
+            } else
+                continue
+        }
     }
-    count = newList.size
-    Log.i("UUUU", count.toString())
+
+    return newList
 }

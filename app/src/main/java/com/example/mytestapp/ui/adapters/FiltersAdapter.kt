@@ -49,7 +49,7 @@ class FiltersAdapter : RecyclerView.Adapter<FiltersAdapter.FiltersListViewHolder
             mRadioButton.setOnClickListener {
                 mSelected = adapterPosition
                 notifyDataSetChanged()
-                selectedClickListener.selectPosition(mDataList[mSelected], 2)
+                selectedClickListener.selectPosition(mDataList[mSelected])
             }
         }
 

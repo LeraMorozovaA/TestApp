@@ -4,30 +4,31 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.observe
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.mytestapp.R
+import com.example.mytestapp.data.model.AvailableCompaniesModel
 import com.example.mytestapp.data.model.FilterModel
 import com.example.mytestapp.ui.adapters.FiltersAdapter
 import com.example.mytestapp.ui.adapters.FiltersCompanyAdapter
 import com.example.mytestapp.ui.interfaces.ISelected
+import com.example.mytestapp.ui.interfaces.OnCheckedClickListener
 import com.example.mytestapp.ui.interfaces.OnSelectedClickListener
 import kotlinx.android.synthetic.main.fragment_filters.*
 
-class FiltersListFragment: Fragment(), OnSelectedClickListener {
+class FiltersListFragment : Fragment(), OnSelectedClickListener, OnCheckedClickListener {
 
     private lateinit var mAdapter: FiltersCompanyAdapter
     private lateinit var mFiltersAdapter: FiltersAdapter
     private lateinit var viewModel: FiltersViewModel
 
     override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.fragment_filters, container, false)
     }
@@ -43,15 +44,15 @@ class FiltersListFragment: Fragment(), OnSelectedClickListener {
         filters_recycleView.layoutManager = linearLManager2
 
         val dividerItemDecoration1 =
-                DividerItemDecoration(companies_recycleView.context, linearLManager1.orientation)
+            DividerItemDecoration(companies_recycleView.context, linearLManager1.orientation)
         companies_recycleView.addItemDecoration(dividerItemDecoration1)
 
         val dividerItemDecoration2 =
-                DividerItemDecoration(filters_recycleView.context, linearLManager2.orientation)
+            DividerItemDecoration(filters_recycleView.context, linearLManager2.orientation)
         filters_recycleView.addItemDecoration(dividerItemDecoration2)
 
         mAdapter = FiltersCompanyAdapter()
-        mAdapter.setSelectedListener(this)
+        mAdapter.setListeners(listener = this, unCheckedListener = this)
         companies_recycleView.adapter = mAdapter
 
         mFiltersAdapter = FiltersAdapter()
@@ -71,8 +72,14 @@ class FiltersListFragment: Fragment(), OnSelectedClickListener {
     }
 
     override fun selectPosition(selectedItem: ISelected) {
-        viewModel.deliveryClick.observe(viewLifecycleOwner){
-
+        when (selectedItem) {
+            is FilterModel -> viewModel.getFiltersClick(selectedItem.id)
+            is AvailableCompaniesModel -> viewModel.getCompanyClick(selectedItem.id)
         }
+    }
+
+    override fun unChecked(selectedItem: ISelected) {
+        val item: AvailableCompaniesModel = selectedItem as AvailableCompaniesModel
+        viewModel.unCheckedPosition(item.id)
     }
 }

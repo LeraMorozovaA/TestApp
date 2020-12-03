@@ -1,62 +1,84 @@
 package com.example.mytestapp.ui.filters
 
-import androidx.databinding.ObservableInt
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.mytestapp.data.model.AvailableCompaniesModel
 import com.example.mytestapp.data.model.AvailableDeliveryModel
-import com.example.mytestapp.data.model.DeliveryModel
+import com.example.mytestapp.data.model.CompanyModel
 import com.example.mytestapp.data.model.FilterModel
 import com.example.mytestapp.data.repository.DataRepository
-import com.example.mytestapp.ui.interfaces.ISelected
 import io.reactivex.disposables.CompositeDisposable
-import java.util.*
 
 class FiltersViewModel : ViewModel() {
 
     private val compositeDisposable = CompositeDisposable()
     private val dataRepository = DataRepository(compositeDisposable)
-    private val ty = 4
 
     lateinit var deliveryList: LiveData<List<AvailableDeliveryModel>>
     lateinit var filtersCompaniesList: LiveData<List<AvailableCompaniesModel>>
     lateinit var filtersList: LiveData<List<FilterModel>>
-    var deliveryClick = MutableLiveData(4)
-    //var  countOfCompanies: LiveData<Int>
+    lateinit var  filteredList: LiveData<List<CompanyModel>>
 
+    var deliveryClick: MutableLiveData<Int> = MutableLiveData(4)
+    var companyClick: MutableLiveData<String> = MutableLiveData("")
+    var filtersClick: MutableLiveData<Int> = MutableLiveData(0)
 
     fun getAvailableDeliveryList() {
         dataRepository.getAvailableListFromDB()
         deliveryList = dataRepository.deliveryDataList
     }
 
-    fun getFiltersCompaniesList(){
+    fun getFiltersCompaniesList() {
         dataRepository.getFiltersCompaniesList()
         filtersCompaniesList = dataRepository.filtersCompaniesList
     }
 
-    fun getFiltersList(){
+    fun getFiltersList() {
         dataRepository.getFiltersListFromDB()
         filtersList = dataRepository.filtersList
     }
 
-    fun getDeliveryClick(selectedItem: Int){
+    fun getDeliveryClick(selectedItem: Int) {
         deliveryClick.value = selectedItem
+        getResults()
     }
 
-    fun getFiltersClick(selectedItem: Int){
-       // deliveryClick.set(selectedItem)
+    fun getFiltersClick(selectedItem: Int) {
+        filtersClick.value = selectedItem
+        getResults()
     }
 
-    fun getCompanyClick(selectedItem: Int){
-       // deliveryClick.set(selectedItem)
+    fun getCompanyClick(selectedItem: String) {
+        companyClick.value = selectedItem
+        getResults()
     }
 
-//    fun get(){
-//        dataRepository.getResults()
-//        countOfCompanies = dataRepository.countOfCompanies
-//    }
+    fun unCheckedPosition(selectedItem: String){
+        dataRepository.getCompaniesListFromDB(
+            deliveryClick.value!!,
+            filtersClick.value!!,
+            selectedItem,
+            false
+        )
+        filteredList = dataRepository.filteredList
+    }
+
+    fun getCompaniesListSize(){
+        dataRepository.getCompaniesListFromDB(4,0,"", true)
+        filteredList = dataRepository.filteredList
+    }
+
+    private fun getResults() {
+        dataRepository.getCompaniesListFromDB(
+            deliveryClick.value!!,
+            filtersClick.value!!,
+            companyClick.value!!,
+            true
+        )
+        filteredList = dataRepository.filteredList
+    }
 
     override fun onCleared() {
         super.onCleared()

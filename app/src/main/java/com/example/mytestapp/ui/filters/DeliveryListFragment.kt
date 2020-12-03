@@ -11,6 +11,7 @@ import androidx.lifecycle.observe
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.mytestapp.R
+import com.example.mytestapp.data.model.AvailableDeliveryModel
 import com.example.mytestapp.ui.adapters.DeliveryListAdapter
 import com.example.mytestapp.ui.interfaces.ISelected
 import com.example.mytestapp.ui.interfaces.OnSelectedClickListener
@@ -51,14 +52,10 @@ class DeliveryListFragment: Fragment(), OnSelectedClickListener {
         viewModel.deliveryList.observe(viewLifecycleOwner) { list ->
             mAdapter.setData(list)
         }
-
-        requireActivity().confirm_button.setOnClickListener {
-            Toast.makeText(context, "!!!", Toast.LENGTH_SHORT).show()
-        }
     }
 
     override fun selectPosition(selectedItem: ISelected) {
-        Toast.makeText(context, selectedItem.toString() , Toast.LENGTH_SHORT).show()
-
+        val item: AvailableDeliveryModel = selectedItem as AvailableDeliveryModel
+            viewModel.getDeliveryClick(item.type)
     }
 }

@@ -9,7 +9,6 @@ import com.example.mytestapp.api.CompaniesApi
 import com.example.mytestapp.data.State
 import com.example.mytestapp.data.model.*
 import com.example.mytestapp.util.getResults
-import com.example.mytestapp.util.saveToSharedPref
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -43,12 +42,14 @@ class DataRepository(private val compositeDisposable: CompositeDisposable) {
     val filtersCompaniesList: LiveData<List<AvailableCompaniesModel>>
         get() = _filtersCompaniesList
 
-    private val _list = MutableLiveData<List<CompanyModel>>()
+    private val _filteredList = MutableLiveData<List<CompanyModel>>()
+    val filteredList: LiveData<List<CompanyModel>>
+        get() = _filteredList
 
-//    private val _countOfCompanies = MutableLiveData<Int>()
-//
-//    val countOfCompanies: LiveData<Int>
-//        get() = _countOfCompanies
+    private val _countOfCompanies = MutableLiveData<Int>()
+
+    val countOfCompanies: LiveData<Int>
+        get() = _countOfCompanies
 
 
     fun getCompaniesList() {
@@ -62,7 +63,6 @@ class DataRepository(private val compositeDisposable: CompositeDisposable) {
                         _state.value = State.SucceededState
                         _companiesList.value = list
                         insertCompaniesIntoDB(list)
-                        getCompaniesListFromDB()
                     },
                     { error ->
                         _state.value = State.ErrorState
@@ -111,7 +111,7 @@ class DataRepository(private val compositeDisposable: CompositeDisposable) {
         )
     }
 
-    fun getFiltersListFromDB(){
+    fun getFiltersListFromDB() {
         compositeDisposable.add(database.getFilterModel()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
@@ -120,7 +120,7 @@ class DataRepository(private val compositeDisposable: CompositeDisposable) {
             })
     }
 
-    fun getAvailableListFromDB(){
+    fun getAvailableListFromDB() {
         compositeDisposable.add(database.getDeliveryModel()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
@@ -130,29 +130,18 @@ class DataRepository(private val compositeDisposable: CompositeDisposable) {
         )
     }
 
-    fun getCompaniesListFromDB() {
+    fun getCompaniesListFromDB(delivery: Int, filters: Int, company: String, unChecked: Boolean) {
         compositeDisposable.add(database.getCompaniesList()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { data ->
-                data.getResults(4, 0)
+                val result: List<CompanyModel> =
+                    data.getResults(delivery, filters, company, unChecked)
+                _filteredList.value = result
+                _countOfCompanies.value = result.size
             }
         )
     }
-
-//        val observableList: Observable<CompanyModel> = Observable.fromIterable(oldList)
-//        val subscribe = observableList.filter { it.availableDeliveryTypes!!.contains(element) }
-//            .toList()
-//            .observeOn(Schedulers.computation())
-//            .subscribeOn(AndroidSchedulers.mainThread())
-//            .subscribe( {
-//                _companiesList.value = it
-//                _countOfCompanies.value = it.size
-//            }, {
-//                Log.e("DataSource", it.message.toString())
-//        })
-//        compositeDisposable.add(subscribe)
-
 
     fun getFiltersCompaniesList() {
         val list = ArrayList<AvailableCompaniesModel>()
@@ -163,16 +152,16 @@ class DataRepository(private val compositeDisposable: CompositeDisposable) {
         _filtersCompaniesList.value = list
     }
 
-    private fun insertIntoDB(model: DeliveryModel){
+    private fun insertIntoDB(model: DeliveryModel) {
         compositeDisposable.add(
             database.insertDeliveryModel(model)
                 .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe ()
+                .subscribe()
         )
     }
 
-    private fun addFirstElement(list: List<AvailableDeliveryModel>): DeliveryModel{
+    private fun addFirstElement(list: List<AvailableDeliveryModel>): DeliveryModel {
         val arrayList = ArrayList<AvailableDeliveryModel>()
         val element = AvailableDeliveryModel(4, "Усі способи отримання")
         arrayList.add(0, element)
@@ -185,7 +174,7 @@ class DataRepository(private val compositeDisposable: CompositeDisposable) {
         val element = FilterModel(0, "Усі категорії")
         filtersArrayList.add(0, element)
         filtersArrayList.addAll(list)
-        for (i in filtersArrayList){
+        for (i in filtersArrayList) {
             database.insertFilterModel(i)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -194,7 +183,7 @@ class DataRepository(private val compositeDisposable: CompositeDisposable) {
     }
 
     private fun insertCompaniesIntoDB(list: List<CompanyModel>) {
-        for (i in list){
+        for (i in list) {
             database.insertCompaniesModel(i)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
