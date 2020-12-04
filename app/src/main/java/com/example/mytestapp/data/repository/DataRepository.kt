@@ -23,7 +23,7 @@ class DataRepository(private val compositeDisposable: CompositeDisposable) {
 
     private val _companiesList = MutableLiveData<List<CompanyModel>>()
 
-    val companiesList: LiveData<List<CompanyModel>>
+    val companiesList: MutableLiveData<List<CompanyModel>>
         get() = _companiesList
 
     private val _deliveryDataList =

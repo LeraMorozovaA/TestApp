@@ -2,7 +2,9 @@ package com.example.mytestapp.ui.list
 
 import android.util.Log
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.switchMap
 import com.example.mytestapp.data.State
 import com.example.mytestapp.data.model.CompanyModel
 import com.example.mytestapp.data.repository.DataRepository
@@ -20,7 +22,7 @@ class ListViewModel : ViewModel() {
     val state: LiveData<State>
     get() = dataRepository.state
 
-    lateinit var companiesList: LiveData<List<CompanyModel>>
+    lateinit var companiesList: MutableLiveData<List<CompanyModel>>
 
     fun getCompaniesList() {
         dataRepository.getCompaniesList()
@@ -30,6 +32,10 @@ class ListViewModel : ViewModel() {
     fun getFiltersModels() {
         dataRepository.getAvailableDeliveryData()
         dataRepository.getFiltersList()
+    }
+
+    fun getFilteredList(list: List<CompanyModel>){
+        companiesList.value = list
     }
 
     override fun onCleared() {

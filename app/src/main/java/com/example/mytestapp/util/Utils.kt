@@ -9,6 +9,9 @@ import com.example.mytestapp.App
 import com.example.mytestapp.R
 import com.example.mytestapp.data.model.AvailableDeliveryModel
 import com.example.mytestapp.data.model.CompanyModel
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import java.lang.reflect.Type
 import java.math.BigInteger
 import java.util.ArrayList
 
@@ -30,8 +33,15 @@ fun ImageView.setIcon(type: Int) {
     }
 }
 
-private val myPrefs: SharedPreferences =
-    App.instance.applicationContext.getSharedPreferences("YOUR_PREFS_NAME", Context.MODE_PRIVATE)
+private val type: Type = object : TypeToken<List<CompanyModel>>() {}.type
+
+fun List<CompanyModel>.toListString(): String{
+   return Gson().toJson(this, type)
+}
+
+fun String.toCompaniesList(): List<CompanyModel>{
+    return Gson().fromJson(this, type)
+}
 
 fun List<CompanyModel>.getResults(delivery: Int, filters: Int, company: String, unChecked: Boolean): List<CompanyModel> {
     val list = ArrayList<CompanyModel>()
