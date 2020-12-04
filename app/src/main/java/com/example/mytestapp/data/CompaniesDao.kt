@@ -1,6 +1,5 @@
 package com.example.mytestapp.data
 
-import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -10,7 +9,6 @@ import com.example.mytestapp.data.model.DeliveryModel
 import com.example.mytestapp.data.model.FilterModel
 import io.reactivex.Completable
 import io.reactivex.Maybe
-import io.reactivex.Single
 
 @Dao
 interface CompaniesDao {

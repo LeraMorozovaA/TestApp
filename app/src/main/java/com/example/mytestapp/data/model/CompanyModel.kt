@@ -50,13 +50,9 @@ data class CompanyModel (
         @Expose
         var specializedCategoriesIds: List<Int>,
 
-//        @SerializedName("recommendedCategoriesIds")
-//        @Expose
-//        var recommendedCategoriesIds: List<Int>,
-
         @SerializedName("availableDeliveryTypes")
         @Expose
-        var availableDeliveryTypes: List<Int>, //какие способы доставки
+        var availableDeliveryTypes: List<Int>,
 
         @SerializedName("terminalPayment")
         @Expose

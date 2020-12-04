@@ -1,20 +1,14 @@
 package com.example.mytestapp.util
 
-import android.content.Context
-import android.content.SharedPreferences
-import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
-import com.example.mytestapp.App
 import com.example.mytestapp.R
 import com.example.mytestapp.data.model.AvailableDeliveryModel
 import com.example.mytestapp.data.model.CompanyModel
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import java.lang.reflect.Type
-import java.math.BigInteger
-import java.util.ArrayList
-
+import java.util.*
 
 fun TextView.setTitle(model: AvailableDeliveryModel) {
     if (model.type == 2)

@@ -4,8 +4,8 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.mytestapp.App
-import com.example.mytestapp.App.Companion.apiService
-import com.example.mytestapp.api.CompaniesApi
+import com.example.mytestapp.api.CompanyApiService
+import com.example.mytestapp.data.CompaniesDao
 import com.example.mytestapp.data.State
 import com.example.mytestapp.data.model.*
 import com.example.mytestapp.util.getResults
@@ -13,32 +13,37 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import java.util.*
+import javax.inject.Inject
 
 class DataRepository(private val compositeDisposable: CompositeDisposable) {
 
-    private val database = App.database.companiesModelDAO()
+    @Inject lateinit var database: CompaniesDao
+
+    @Inject lateinit var apiService: CompanyApiService
+
+    init {
+        App.appComponent.inject(this)
+    }
+
+    private val CITY_ID = 1
 
     private val _state = MutableLiveData<State>()
     val state: LiveData<State> get() = _state
 
     private val _companiesList = MutableLiveData<List<CompanyModel>>()
-
     val companiesList: MutableLiveData<List<CompanyModel>>
         get() = _companiesList
 
     private val _deliveryDataList =
         MutableLiveData<List<AvailableDeliveryModel>>()
-
     val deliveryDataList: LiveData<List<AvailableDeliveryModel>>
         get() = _deliveryDataList
 
     private val _filtersList = MutableLiveData<List<FilterModel>>()
-
     val filtersList: LiveData<List<FilterModel>>
         get() = _filtersList
 
     private val _filtersCompaniesList = MutableLiveData<List<AvailableCompaniesModel>>()
-
     val filtersCompaniesList: LiveData<List<AvailableCompaniesModel>>
         get() = _filtersCompaniesList
 
@@ -46,16 +51,10 @@ class DataRepository(private val compositeDisposable: CompositeDisposable) {
     val filteredList: LiveData<List<CompanyModel>>
         get() = _filteredList
 
-    private val _countOfCompanies = MutableLiveData<Int>()
-
-    val countOfCompanies: LiveData<Int>
-        get() = _countOfCompanies
-
-
     fun getCompaniesList() {
         _state.value = State.LoggingState
         compositeDisposable.add(
-            apiService.getCompaniesList(CompaniesApi.CITY_ID)
+            apiService.getCompaniesList(CITY_ID)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
@@ -75,7 +74,7 @@ class DataRepository(private val compositeDisposable: CompositeDisposable) {
     fun getAvailableDeliveryData() {
         _state.value = State.LoggingState
         compositeDisposable.add(
-            apiService.getAvailableDeliveryData(CompaniesApi.CITY_ID)
+            apiService.getAvailableDeliveryData(CITY_ID)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
@@ -95,7 +94,7 @@ class DataRepository(private val compositeDisposable: CompositeDisposable) {
     fun getFiltersList() {
         _state.value = State.LoggingState
         compositeDisposable.add(
-            apiService.getFiltersList(CompaniesApi.CITY_ID)
+            apiService.getFiltersList(CITY_ID)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
@@ -138,7 +137,6 @@ class DataRepository(private val compositeDisposable: CompositeDisposable) {
                 val result: List<CompanyModel> =
                     data.getResults(delivery, filters, company, unChecked)
                 _filteredList.value = result
-                _countOfCompanies.value = result.size
             }
         )
     }

@@ -2,20 +2,14 @@ package com.example.mytestapp.ui.filters
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.mytestapp.R
-import com.example.mytestapp.data.model.CompanyModel
 import com.example.mytestapp.ui.adapters.ViewPagerAdapter
 import com.example.mytestapp.util.toListString
 import com.google.android.material.tabs.TabLayoutMediator
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import kotlinx.android.synthetic.main.activity_filters.*
-import java.lang.reflect.Type
 
 
 class FiltersActivity : AppCompatActivity() {
@@ -54,7 +48,6 @@ class FiltersActivity : AppCompatActivity() {
             setResult(RESULT_OK, intent)
             finish()
         }
-
     }
 
     companion object{

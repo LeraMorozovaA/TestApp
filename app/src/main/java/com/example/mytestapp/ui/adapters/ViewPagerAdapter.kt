@@ -2,7 +2,6 @@ package com.example.mytestapp.ui.adapters
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
-
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.example.mytestapp.ui.filters.DeliveryListFragment
 import com.example.mytestapp.ui.filters.FiltersListFragment

@@ -6,7 +6,6 @@ import com.example.mytestapp.ui.interfaces.ISelected
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-
 @Entity(tableName = "filter_model")
 data class FilterModel(
         @PrimaryKey

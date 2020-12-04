@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.observe
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -62,13 +63,13 @@ class FiltersListFragment : Fragment(), OnSelectedClickListener, OnCheckedClickL
         viewModel.getFiltersCompaniesList()
         viewModel.getFiltersList()
 
-        viewModel.filtersCompaniesList.observe(viewLifecycleOwner) { list ->
+        viewModel.filtersCompaniesList.observe(viewLifecycleOwner, Observer { list ->
             mAdapter.setData(list)
-        }
+        })
 
-        viewModel.filtersList.observe(viewLifecycleOwner) { list ->
+        viewModel.filtersList.observe(viewLifecycleOwner, Observer { list ->
             mFiltersAdapter.setData(list)
-        }
+        })
     }
 
     override fun selectPosition(selectedItem: ISelected) {

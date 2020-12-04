@@ -3,17 +3,13 @@ package com.example.mytestapp.ui.list
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.mytestapp.R
 import com.example.mytestapp.data.State
-import com.example.mytestapp.data.model.CompanyModel
 import com.example.mytestapp.ui.adapters.ListAdapter
 import com.example.mytestapp.ui.filters.FiltersActivity
 import com.example.mytestapp.ui.filters.FiltersActivity.Companion.EXTRAS_STRING

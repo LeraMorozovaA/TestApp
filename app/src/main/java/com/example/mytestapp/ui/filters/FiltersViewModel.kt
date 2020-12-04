@@ -1,6 +1,5 @@
 package com.example.mytestapp.ui.filters
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -19,7 +18,7 @@ class FiltersViewModel : ViewModel() {
     lateinit var deliveryList: LiveData<List<AvailableDeliveryModel>>
     lateinit var filtersCompaniesList: LiveData<List<AvailableCompaniesModel>>
     lateinit var filtersList: LiveData<List<FilterModel>>
-    lateinit var  filteredList: LiveData<List<CompanyModel>>
+    lateinit var filteredList: LiveData<List<CompanyModel>>
 
     var deliveryClick: MutableLiveData<Int> = MutableLiveData(4)
     var companyClick: MutableLiveData<String> = MutableLiveData("")
