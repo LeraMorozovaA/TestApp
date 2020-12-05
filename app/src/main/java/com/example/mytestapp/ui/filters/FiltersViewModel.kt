@@ -21,7 +21,7 @@ class FiltersViewModel : ViewModel() {
     lateinit var filteredList: LiveData<List<CompanyModel>>
 
     var deliveryClick: MutableLiveData<Int> = MutableLiveData(4)
-    var companyClick: MutableLiveData<String> = MutableLiveData("")
+    var companyClick: MutableLiveData<ArrayList<String>> = MutableLiveData(ArrayList())
     var filtersClick: MutableLiveData<Int> = MutableLiveData(0)
 
     fun getAvailableDeliveryList() {
@@ -50,22 +50,17 @@ class FiltersViewModel : ViewModel() {
     }
 
     fun getCompanyClick(selectedItem: String) {
-        companyClick.value = selectedItem
+        companyClick.value!!.add(selectedItem)
         getResults()
     }
 
     fun unCheckedPosition(selectedItem: String){
-        dataRepository.getCompaniesListFromDB(
-            deliveryClick.value!!,
-            filtersClick.value!!,
-            selectedItem,
-            false
-        )
-        filteredList = dataRepository.filteredList
+        companyClick.value!!.remove(selectedItem)
+        getResults()
     }
 
     fun getCompaniesListSize(){
-        dataRepository.getCompaniesListFromDB(4,0,"", true)
+        dataRepository.getCompaniesListFromDB(4,0, emptyList())
         filteredList = dataRepository.filteredList
     }
 
@@ -73,8 +68,7 @@ class FiltersViewModel : ViewModel() {
         dataRepository.getCompaniesListFromDB(
             deliveryClick.value!!,
             filtersClick.value!!,
-            companyClick.value!!,
-            true
+            companyClick.value!!
         )
         filteredList = dataRepository.filteredList
     }

@@ -10,23 +10,29 @@ import com.example.mytestapp.ui.interfaces.OnCheckedClickListener
 import com.example.mytestapp.ui.interfaces.OnSelectedClickListener
 import kotlinx.android.synthetic.main.item_line_filters_checkbox.view.*
 
-class FiltersCompanyAdapter :
-        RecyclerView.Adapter<FiltersCompanyAdapter.FilterCompanyViewHolder>() {
+class FiltersCompanyAdapter : RecyclerView.Adapter<FiltersCompanyAdapter.FilterCompanyViewHolder>() {
 
     private var mDataList: List<AvailableCompaniesModel> = ArrayList()
     lateinit var selectedClickListener: OnSelectedClickListener
     lateinit var unCheckedClickListener: OnCheckedClickListener
-    var mSelected = -1
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FilterCompanyViewHolder {
         val layoutInflater: LayoutInflater = LayoutInflater.from(parent.context)
         val view: View =
-                layoutInflater.inflate(R.layout.item_line_filters_checkbox, parent, false)
+            layoutInflater.inflate(R.layout.item_line_filters_checkbox, parent, false)
         return FilterCompanyViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: FilterCompanyViewHolder, position: Int) {
         holder.bind(mDataList[position])
+        holder.mCheckBox.setOnClickListener {
+            if (holder.mCheckBox.isChecked) {
+                selectedClickListener.selectPosition(mDataList[position])
+            } else {
+                holder.mCheckBox.isChecked = false
+                unCheckedClickListener.unChecked(mDataList[position])
+            }
+        }
     }
 
     override fun getItemCount(): Int {
@@ -45,24 +51,10 @@ class FiltersCompanyAdapter :
 
     inner class FilterCompanyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-        private val mText = itemView.text_filters_checkbox
-        private val mCheckBox = itemView.checkbox_filters
-
-        init {
-            mCheckBox.setOnClickListener {
-                mSelected = adapterPosition
-                notifyDataSetChanged()
-                if (mCheckBox.isChecked) {
-                    unCheckedClickListener.unChecked(mDataList[mSelected])
-                } else {
-                    mCheckBox.isChecked = false
-                    selectedClickListener.selectPosition(mDataList[mSelected])
-                }
-            }
-        }
+        val mCheckBox = itemView.checkbox_filters
 
         fun bind(model: AvailableCompaniesModel) {
-            mText.text = model.name
+            mCheckBox.text = model.name
         }
     }
 }

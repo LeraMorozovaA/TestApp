@@ -129,13 +129,13 @@ class DataRepository(private val compositeDisposable: CompositeDisposable) {
         )
     }
 
-    fun getCompaniesListFromDB(delivery: Int, filters: Int, company: String, unChecked: Boolean) {
+    fun getCompaniesListFromDB(delivery: Int, filters: Int, company: List<String>) {
         compositeDisposable.add(database.getCompaniesList()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { data ->
                 val result: List<CompanyModel> =
-                    data.getResults(delivery, filters, company, unChecked)
+                    data.getResults(delivery, filters, company)
                 _filteredList.value = result
             }
         )

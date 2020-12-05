@@ -29,28 +29,28 @@ fun ImageView.setIcon(type: Int) {
 
 private val type: Type = object : TypeToken<List<CompanyModel>>() {}.type
 
-fun List<CompanyModel>.toListString(): String{
-   return Gson().toJson(this, type)
+fun List<CompanyModel>.toListString(): String {
+    return Gson().toJson(this, type)
 }
 
-fun String.toCompaniesList(): List<CompanyModel>{
+fun String.toCompaniesList(): List<CompanyModel> {
     return Gson().fromJson(this, type)
 }
 
-fun List<CompanyModel>.getResults(delivery: Int, filters: Int, company: String, unChecked: Boolean): List<CompanyModel> {
+fun List<CompanyModel>.getResults(delivery: Int, filters: Int, company: List<String>): List<CompanyModel> {
     val list = ArrayList<CompanyModel>()
     list.addAll(elements = this)
 
     if (delivery != 4)
-      list.retainAll(filterByDelivery(delivery, this))
+        list.retainAll(filterByDelivery(delivery, this))
 
     if (filters != 0)
         list.retainAll(filterByFilters(filters, this))
 
-    if (!unChecked) {
-        if (company.isNotEmpty())
-            list.retainAll(filterByCompany(company, this))
-    }
+    if (company.isNotEmpty() && company.size == 1)
+        list.retainAll(filterByCompany(company, this))
+    else  if (company.isNotEmpty() && company.size == 2)
+        list.retainAll(filterByCompanies(this))
 
     return list
 }
@@ -80,23 +80,36 @@ fun filterByFilters(filters: Int, list: List<CompanyModel>): ArrayList<CompanyMo
     return newList
 }
 
-fun filterByCompany(company: String, list: List<CompanyModel>): ArrayList<CompanyModel> {
+fun filterByCompany(company: List<String>, list: List<CompanyModel>): ArrayList<CompanyModel> {
     val newList = ArrayList<CompanyModel>()
-    if (company == "status"){
-        for (i: CompanyModel in list) {
-            if (i.status == 1 && i.isWorkingNow == 1) {
-                newList.add(i)
-            } else
-                continue
-        }
-    } else if (company == "onlinePayment"){
-        for (i: CompanyModel in list) {
-            if (i.onlinePayment == 1) {
-                newList.add(i)
-            } else
-                continue
+    for (k in company) {
+        if (k == "status") {
+            for (i: CompanyModel in list) {
+                if (i.status == 1 && i.isWorkingNow == 1) {
+                    newList.add(i)
+                } else
+                    continue
+            }
+        } else if (k == "onlinePayment") {
+            for (i: CompanyModel in list) {
+                if (i.onlinePayment == 1) {
+                    newList.add(i)
+                } else
+                    continue
+            }
         }
     }
 
+    return newList
+}
+
+fun filterByCompanies(list: List<CompanyModel>): ArrayList<CompanyModel>{
+    val newList = ArrayList<CompanyModel>()
+    for (i: CompanyModel in list) {
+        if (i.status == 1 && i.isWorkingNow == 1 && i.onlinePayment == 1) {
+            newList.add(i)
+        } else
+            continue
+    }
     return newList
 }

@@ -23,8 +23,8 @@ class FiltersAdapter : RecyclerView.Adapter<FiltersAdapter.FiltersListViewHolder
     }
 
     override fun onBindViewHolder(holder: FiltersListViewHolder, position: Int) {
-            holder.bind(mDataList[position] )
-            holder.mRadioButton.setChecked(mSelected == position)
+        holder.bind(mDataList[position] )
+        holder.mRadioButton.setChecked(mSelected == position)
     }
 
     override fun getItemCount(): Int {
@@ -42,7 +42,6 @@ class FiltersAdapter : RecyclerView.Adapter<FiltersAdapter.FiltersListViewHolder
 
     inner class FiltersListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-        private val mTextFilters = itemView.txt_filters
         val mRadioButton = itemView.radiobtn_filters
 
         init {
@@ -54,7 +53,7 @@ class FiltersAdapter : RecyclerView.Adapter<FiltersAdapter.FiltersListViewHolder
         }
 
         fun bind(model: FilterModel) {
-            mTextFilters.text = model.name
+            mRadioButton.text = model.name
         }
     }
 }

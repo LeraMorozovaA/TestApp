@@ -43,7 +43,6 @@ class DeliveryListAdapter: RecyclerView.Adapter<DeliveryListAdapter.DeliveryList
     inner class DeliveryListViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
 
         private val mImage = itemView.img_filters_rbtn
-        private val mTextDelivery = itemView.text_filters_rbtn
         val mRadioButton = itemView.radiobutton_filters
 
         init {
@@ -56,7 +55,7 @@ class DeliveryListAdapter: RecyclerView.Adapter<DeliveryListAdapter.DeliveryList
 
         fun bind(model: AvailableDeliveryModel){
             mImage.setIcon(type = model.type)
-            mTextDelivery.setTitle(model = model)
+            mRadioButton.setTitle(model = model)
         }
     }
 }
